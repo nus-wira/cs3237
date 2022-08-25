@@ -10,13 +10,13 @@ void setup() {
   // Now set up two tasks to run independently.
   xTaskCreate(
     TaskA   //function that executes the task
-    ,  (const portCHAR *)"Task A"   // For human only
+    ,  "Task A"   // For human only
     ,  128  // Stack size
     ,  NULL // Parameter passed to the task
     ,  2    // priority
     ,  NULL );  //Task handler for future operation
 
-  xTaskCreate( TaskB,  (const portCHAR *) "TaskB"
+  xTaskCreate( TaskB,  "TaskB"
     ,  128 ,  NULL,  1,  NULL );
 
   // The RTOS scheduler is automatically started when 
