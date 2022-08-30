@@ -2,9 +2,14 @@
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266mDNS.h>
+#include "config.h"
 
-const char* ssid = ""; // To fill out
-const char* password = ""; // To fill out
+#define LED D4
+
+const char* ssid = SSID; // To fill out
+const char* password = PASSWORD; // To fill out
+
+byte LED_state = LOW;
 
 ESP8266WebServer server(80);
 
@@ -27,7 +32,18 @@ void handleNotFound(){
   server.send(404, "text/plain", message);
 }
 
+void toggleLED() {
+  LED_state = !LED_state;
+  digitalWrite(LED, LED_state);
+  if (LED_state)
+    server.send(200, "text/plain", "LED off");
+  else
+    server.send(200, "text/plain", "LED on");
+}
+
 void setup(void){
+  pinMode(LED, OUTPUT);
+  digitalWrite(LED, LED_state);
   Serial.begin(115200);
   WiFi.begin(ssid, password);
   Serial.println("");
@@ -52,6 +68,8 @@ void setup(void){
   server.on("/inline", [](){
   server.send(200, "text/plain", "You can define a handler like this as well!");
   });
+
+  server.on("/toggleLED", toggleLED);
   
   server.onNotFound(handleNotFound);
   

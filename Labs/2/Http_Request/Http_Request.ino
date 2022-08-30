@@ -1,12 +1,13 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include <WiFiClient.h>
+#include "config.h"
 
-const char* ssid = ""; //Your Wifi's SSID
-const char* password = ""; //Wifi Password
+const char* ssid = SSID; //Your Wifi's SSID
+const char* password = PASSWORD; //Wifi Password
 
 WiFiClient wifiClient;
-const char* laptopAt = "<Laptop IP Address>:3237/"; //change to your Laptop's IP
+const char* laptopAt = LAPTOP_IP; //change to your Laptop's IP
 
 void setup(void){
   Serial.begin(115200);

@@ -1,5 +1,5 @@
 #include <Wire.h>
-//byte address = <put the I2C address here>;
+byte address = 0x48;
 
 uint8_t MSByte = 0, LSByte = 0;
 uint16_t regValue = 0;
@@ -19,7 +19,7 @@ void loop()
     Serial.println("Success");
     Wire.beginTransmission(address);
     Wire.write(0b00000001); // Config Register
-    Wire.write(0b11000000); // MSB of Config Register
+    Wire.write(0b11010000); // MSB of Config Register
     Wire.write(0b10000011); // LSB of Config Register
     Wire.endTransmission();
 

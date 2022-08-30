@@ -134,23 +134,25 @@ void setup() {
    */
 
 void loop() {
-  float voltage = 0.0;
+  float v0 = 0.0, v1 = 0.0, v2 = 0.0;
 
   Serial.print("0: ");
-  voltage = readChannel(ADS1115_COMP_0_GND);
-  Serial.print(voltage);
+  v0 = readChannel(ADS1115_COMP_0_GND);
+  Serial.print(v0);
 
   Serial.print(",   1: ");
-  voltage = readChannel(ADS1115_COMP_1_GND);
-  Serial.print(voltage);
+  v1 = readChannel(ADS1115_COMP_1_GND);
+  Serial.print(v1);
   
   Serial.print(",   2: ");
-  voltage = readChannel(ADS1115_COMP_2_GND);
-  Serial.print(voltage);
+  v2 = readChannel(ADS1115_COMP_2_GND);
+  Serial.println(v2);
 
-  Serial.print(",   3: ");
-  voltage = readChannel(ADS1115_COMP_3_GND);
-  Serial.println(voltage);
+  // Serial.print(",   3: ");
+  // voltage = readChannel(ADS1115_COMP_3_GND);
+  // Serial.println(voltage);
+  direction(v0,v1);
+  click(v2);
 
   delay(1000);
 }
@@ -160,4 +162,42 @@ float readChannel(ADS1115_MUX channel) {
   adc.setCompareChannels(channel);
   voltage = adc.getResult_V(); // alternative: getResult_mV for Millivolt
   return voltage;
+}
+
+const float LOW_THRESH = 0.3;
+const float HI_THRESH = 3;
+
+void direction(float v0, float v1) {
+  byte isUp = v0 > HI_THRESH;
+  byte isDown = v0 < LOW_THRESH;
+  byte isLeft = v1 < LOW_THRESH;
+  byte isRight = v1 > HI_THRESH;
+
+  if (isUp) {
+    if (isLeft)
+      Serial.println("Up-Left");
+    else if (isRight)
+      Serial.println("Up-Right");
+    else
+      Serial.println("Up");
+  } else if (isDown) {
+    if (isLeft)
+      Serial.println("Down-Left");
+    else if (isRight)
+      Serial.println("Down-Right");
+    else
+      Serial.println("Down");
+  } else {
+    if (isLeft)
+      Serial.println("Left");
+    else if (isRight)
+      Serial.println("Right");
+    else
+      Serial.println("Rest");
+  }
+}
+
+void click(float v2) {
+  if (v2 < LOW_THRESH)
+    Serial.println("Clicked!");
 }
