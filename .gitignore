@@ -4,3 +4,4 @@
 !/.gitignore
 ArduinoOutput
 config.h
+*.hd5
