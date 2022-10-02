@@ -36,6 +36,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .highlight .m { color: var(--jp-mirror-editor-number-color) } /* Literal.Number */
 .highlight .s { color: var(--jp-mirror-editor-string-color) } /* Literal.String */
 .highlight .ow { color: var(--jp-mirror-editor-operator-color); font-weight: bold } /* Operator.Word */
+.highlight .pm { color: var(--jp-mirror-editor-punctuation-color) } /* Punctuation.Marker */
 .highlight .w { color: var(--jp-mirror-editor-variable-color) } /* Text.Whitespace */
 .highlight .mb { color: var(--jp-mirror-editor-number-color) } /* Literal.Number.Bin */
 .highlight .mf { color: var(--jp-mirror-editor-number-color) } /* Literal.Number.Float */
@@ -14464,10 +14465,6 @@ a.anchor-link {
   display: none;
 }
 
-.highlight  {
-  margin: 0.4em;
-}
-
 /* Input area styling */
 .jp-InputArea {
   overflow: hidden;
@@ -14477,9 +14474,26 @@ a.anchor-link {
   overflow: hidden;
 }
 
-.CodeMirror pre {
+.CodeMirror.cm-s-jupyter .highlight pre {
+/* weird, but --jp-code-padding defined to be 5px but 4px horizontal padding is hardcoded for pre.CodeMirror-line */
+  padding: var(--jp-code-padding) 4px;
   margin: 0;
-  padding: 0;
+
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+
+}
+
+.jp-OutputArea-output pre {
+  line-height: inherit;
+  font-family: inherit;
+}
+
+.jp-RenderedText pre {
+  color: var(--jp-content-font-color1);
+  font-size: var(--jp-code-font-size);
 }
 
 /* Using table instead of flexbox so that we can use break-inside property */
@@ -14559,12 +14573,12 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
                 },
                 displayAlign: 'center',
                 CommonHTML: {
-                    linebreaks: { 
-                    automatic: true 
+                    linebreaks: {
+                    automatic: true
                     }
                 }
             });
-        
+
             MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
         }
     }
@@ -14579,25 +14593,11 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h1 id="CS3237-Lab-5-Introduction-to-Deep-Learning">CS3237 Lab 5 Introduction to Deep Learning<a class="anchor-link" href="#CS3237-Lab-5-Introduction-to-Deep-Learning">&#182;</a></h1><table>
-<thead><tr>
-<th style="text-align:left">Student Number</th>
-<th style="text-align:left">Name</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left"></td>
-<td style="text-align:left">Wira Azmoon Ahmad</td>
-</tr>
-<tr>
-<td style="text-align:left"></td>
-<td style="text-align:left">R Ramana</td>
-</tr>
-</tbody>
-</table>
+<h1 id="CS3237-Lab-5-Introduction-to-Deep-Learning">CS3237 Lab 5 Introduction to Deep Learning<a class="anchor-link" href="#CS3237-Lab-5-Introduction-to-Deep-Learning">&#182;</a></h1><p>|Student Number |Name                  |
+|:--------------|:---------------------|
+|               | Wira Azmoon Ahmad |
+|               | R Ramana |</p>
 <h2 id="1.-Introduction">1. Introduction<a class="anchor-link" href="#1.-Introduction">&#182;</a></h2><p>We will achieve the following objectives in this lab:</p>
-
 <pre><code>1. An understanding of the practical limitations of using dense networks in complex tasks
 2. Hands-on experience in building a deep learning neural network to solve a relatively complex task.
 
@@ -14607,7 +14607,6 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <h2 id="2.-Submission-Instructions">2. Submission Instructions<a class="anchor-link" href="#2.-Submission-Instructions">&#182;</a></h2><p>Please work together as a team of 2 to complete this lab. You will need to submit ONE copy of this notebook per team, but please fill in the names of both team members above. This lab is worth 55 marks.</p>
 <p><strong>DO NOT SUBMIT MORE THAN ONE COPY OF THIS LAB!</strong></p>
 <h2 id="3.-Creating-a-Dense-Network-for-CIFAR-10">3. Creating a Dense Network for CIFAR-10<a class="anchor-link" href="#3.-Creating-a-Dense-Network-for-CIFAR-10">&#182;</a></h2><p>We will now begin building a neural network for the CIFAR-10 dataset. The CIFAR-10 dataset consists of 50,000 32x32x3 (32x32 pixels, RGB channels) training images and 10,000 testing images (also 32x32x3), divided into the following 10 categories:</p>
-
 <pre><code>1. Airplane
 2. Automobile
 3. Bird
@@ -14641,8 +14640,8 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
     <span class="p">(</span><span class="n">train_x</span><span class="p">,</span> <span class="n">train_y</span><span class="p">),</span> <span class="p">(</span><span class="n">test_x</span><span class="p">,</span> <span class="n">test_y</span><span class="p">)</span> <span class="o">=</span> <span class="n">cifar10</span><span class="o">.</span><span class="n">load_data</span><span class="p">()</span>
     <span class="n">train_x</span> <span class="o">=</span> <span class="n">train_x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">train_x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">3072</span><span class="p">)</span> <span class="c1"># Question 1</span>
     <span class="n">test_x</span> <span class="o">=</span> <span class="n">test_x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">test_x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">3072</span><span class="p">)</span> <span class="c1"># Question 1</span>
-    <span class="n">train_x</span> <span class="o">=</span> <span class="n">train_x</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
-    <span class="n">test_x</span> <span class="o">=</span> <span class="n">test_x</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+    <span class="n">train_x</span> <span class="o">=</span> <span class="n">train_x</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'float32'</span><span class="p">)</span>
+    <span class="n">test_x</span> <span class="o">=</span> <span class="n">test_x</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'float32'</span><span class="p">)</span>
     <span class="n">train_x</span> <span class="o">/=</span> <span class="mf">255.0</span>
     <span class="n">test_x</span> <span class="o">/=</span> <span class="mf">255.0</span>
     <span class="n">ret_train_y</span> <span class="o">=</span> <span class="n">to_categorical</span><span class="p">(</span><span class="n">train_y</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
@@ -14666,13 +14665,13 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<hr>
-<h4 id="Question-1">Question 1<a class="anchor-link" href="#Question-1">&#182;</a></h4><p>Explain what the following two  statements do, and where the number "3072" came from (2 MARKS):</p>
-
+<hr />
+<h4 id="Question-1">Question 1<a class="anchor-link" href="#Question-1">&#182;</a></h4><p>Explain what the following two  statements do, and where the number &quot;3072&quot; came from (2 MARKS):</p>
 <pre><code>  train_x = train_x.reshape(train_x.shape[0], 3072) # Question 1
-  test_x = test_x.reshape(test_x.shape[0], 3072) # Question 1</code></pre>
-<p><strong><em>They flatten each datapoint to a vector of size 3072. The number of rows is the number of datapoints, and the number of columns is the number pixels in the image, multiplied by 3 colour channels.</em></strong></p>
-<p><em>FOR GRADER: <strong>___</strong> / 2</em></p>
+  test_x = test_x.reshape(test_x.shape[0], 3072) # Question 1
+</code></pre>
+<p>*<strong>They flatten each datapoint to a vector of size 3072. The number of rows is the number of datapoints, and the number of columns is the number pixels in the image, multiplied by 3 colour channels.</strong>*</p>
+<p><em>FOR GRADER: _______ / 2</em></p>
 <h3 id="3.2-Building-the-MLP-Classifier">3.2 Building the MLP Classifier<a class="anchor-link" href="#3.2-Building-the-MLP-Classifier">&#182;</a></h3><p>In the code box below, create a new fully connected (dense) multilayer perceptron classifier for the CIFAR-10 dataset. To begin with, create a network with one hidden layer of 1024 neurons, using the SGD optimizer. You should output the training and validation accuracy at every epoch, and train for 50 epochs:</p>
 
 </div>
@@ -14686,11 +14685,11 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="sd">&quot;&quot;&quot; </span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="sd">""" </span>
 <span class="sd">Write your code to build an MLP with one hidden layer of 1024 neurons,</span>
 <span class="sd">with an SGD optimizer. Train for 50 epochs, and output the training and</span>
 <span class="sd">validation accuracy at each epoch.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="n">INPUT_FEATS</span> <span class="o">=</span> <span class="mi">3072</span>
 <span class="n">N_LAYER_1</span> <span class="o">=</span> <span class="mi">1024</span>
 <span class="n">N_CLASSES</span> <span class="o">=</span> <span class="mi">10</span>
@@ -14702,18 +14701,18 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 
 <span class="c1"># Create the neural network</span>
 <span class="n">nn</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
-<span class="n">nn</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">N_LAYER_1</span><span class="p">,</span> <span class="n">input_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">INPUT_FEATS</span><span class="p">,</span> <span class="p">),</span> <span class="n">activation</span> <span class="o">=</span> <span class="s1">&#39;relu&#39;</span><span class="p">))</span>
-<span class="n">nn</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">N_CLASSES</span><span class="p">,</span> <span class="n">activation</span> <span class="o">=</span> <span class="s1">&#39;softmax&#39;</span><span class="p">))</span>
+<span class="n">nn</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">N_LAYER_1</span><span class="p">,</span> <span class="n">input_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">INPUT_FEATS</span><span class="p">,</span> <span class="p">),</span> <span class="n">activation</span> <span class="o">=</span> <span class="s1">'relu'</span><span class="p">))</span>
+<span class="n">nn</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">N_CLASSES</span><span class="p">,</span> <span class="n">activation</span> <span class="o">=</span> <span class="s1">'softmax'</span><span class="p">))</span>
 
 <span class="n">lr_schedule</span> <span class="o">=</span> <span class="n">ExponentialDecay</span><span class="p">(</span><span class="n">initial_learning_rate</span><span class="o">=</span><span class="mf">1e-1</span><span class="p">,</span> <span class="n">decay_steps</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">decay_rate</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
 <span class="c1"># Create our optimizer</span>
 <span class="n">sgd</span> <span class="o">=</span> <span class="n">SGD</span><span class="p">(</span><span class="n">learning_rate</span> <span class="o">=</span> <span class="n">lr_schedule</span><span class="p">)</span>
 
-<span class="c1"># &#39;Compile&#39; the network to associate it with a loss function,</span>
+<span class="c1"># 'Compile' the network to associate it with a loss function,</span>
 <span class="c1"># an optimizer, and what metrics we want to track</span>
-<span class="n">nn</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="s1">&#39;categorical_crossentropy&#39;</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">sgd</span><span class="p">,</span> 
-          <span class="n">metrics</span> <span class="o">=</span> <span class="s1">&#39;accuracy&#39;</span><span class="p">)</span>
+<span class="n">nn</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="s1">'categorical_crossentropy'</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">sgd</span><span class="p">,</span> 
+          <span class="n">metrics</span> <span class="o">=</span> <span class="s1">'accuracy'</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -14744,9 +14743,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 
 
 <div class="jp-OutputArea jp-Cell-outputArea">
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -14855,9 +14852,7 @@ Epoch 50/50
 </pre>
 </div>
 </div>
-
-<div class="jp-OutputArea-child">
-
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[&nbsp;]:</div>
 
@@ -14874,22 +14869,6 @@ Epoch 50/50
 
 </div>
 
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-     </div>
-</div>
-</div>
-</div>
-
 </div>
 <div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
 <div class="jp-Cell-inputWrapper">
@@ -14899,73 +14878,25 @@ Epoch 50/50
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <h4 id="Question-2">Question 2<a class="anchor-link" href="#Question-2">&#182;</a></h4><p>Complete the following table on the design choices for your MLP 
 (3 MARKS):</p>
-<table>
-<thead><tr>
-<th style="text-align:left">Hyperparameter</th>
-<th style="text-align:left">What I used</th>
-<th style="text-align:left">Why?</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">Optimizer</td>
-<td style="text-align:left">SGD</td>
-<td style="text-align:left">Specified in question</td>
-</tr>
-<tr>
-<td style="text-align:left"># of hidden layers</td>
-<td style="text-align:left">1</td>
-<td style="text-align:left">Specified in question</td>
-</tr>
-<tr>
-<td style="text-align:left"># of hidden neurons</td>
-<td style="text-align:left">1024</td>
-<td style="text-align:left">Specified in question</td>
-</tr>
-<tr>
-<td style="text-align:left">Hid layer activation</td>
-<td style="text-align:left">Sigmoid</td>
-<td style="text-align:left">Popular nonlinear function to obtain nonlinear relationship</td>
-</tr>
-<tr>
-<td style="text-align:left"># of output neurons</td>
-<td style="text-align:left">10</td>
-<td style="text-align:left">10 classes</td>
-</tr>
-<tr>
-<td style="text-align:left">Output activation</td>
-<td style="text-align:left">Softmax</td>
-<td style="text-align:left">Obtain probability for each class</td>
-</tr>
-<tr>
-<td style="text-align:left">learning rate</td>
-<td style="text-align:left">0.1</td>
-<td style="text-align:left">Obtains decent results</td>
-</tr>
-<tr>
-<td style="text-align:left">momentum</td>
-<td style="text-align:left">0</td>
-<td style="text-align:left">Default parameters to start with</td>
-</tr>
-<tr>
-<td style="text-align:left">decay</td>
-<td style="text-align:left">None</td>
-<td style="text-align:left">Default parameters to start with</td>
-</tr>
-<tr>
-<td style="text-align:left">loss</td>
-<td style="text-align:left">categorical cross entropy</td>
-<td style="text-align:left">used for single-lable, multi-class classification</td>
-</tr>
-</tbody>
-</table>
+<p>| Hyperparameter       | What I used | Why?                  |
+|:---------------------|:------------|:----------------------|
+| Optimizer            | SGD         | Specified in question |
+| # of hidden layers   | 1           | Specified in question |
+| # of hidden neurons  | 1024        | Specified in question |
+| Hid layer activation | ReLU        | Popular nonlinear function to obtain nonlinear relationship |
+| # of output neurons  | 10          | 10 classes |
+| Output activation    | Softmax     | Obtain probability for each class |
+| learning rate        | 0.1         | Obtains decent results |
+| momentum             | 0           | Default parameters to start with |
+| decay                | None        | Default parameters to start with |
+| loss                 | categorical cross entropy | used for single-lable, multi-class classification |</p>
 <p><em>FOR GRADER:</em><br>
 <em>Table: ___ / 3</em> <br>
 <em>Code:  ___ / 5</em> <br>
-<strong>TOTAL: <em>__</em> / 8</strong> <br></p>
+<strong>TOTAL: ____ / 8</strong> <br></p>
 <h4 id="Question-3:">Question 3:<a class="anchor-link" href="#Question-3:">&#182;</a></h4><p>What was your final training accuracy? Validation accuracy? Is there overfitting / underfitting? Explain your answer (5 MARKS)</p>
-<p><strong><em>Training: 0.67, Validation: 0.48. There is overfitting with the training accuracy is much larger than the validation accuracy, as well as underfitting where the training accuracy could be much higher to fit the train dataset.</em></strong></p>
-<p><em>FOR GRADER: <strong>__</strong> / 5</em></p>
+<p>*<strong>Training: 0.67, Validation: 0.48. There is both overfitting and underfitting simultaneously. There is overfitting as the training accuracy is much larger than the validation accuracy; as well as underfitting as the training accuracy of 0.67 is not very high and could be much higher to fit the train dataset.</strong>*</p>
+<p><em>FOR GRADER: ______ / 5</em></p>
 <h3 id="3.3-Experimenting-with-the-MLP">3.3 Experimenting with the MLP<a class="anchor-link" href="#3.3-Experimenting-with-the-MLP">&#182;</a></h3><p>Cut and paste your code from Section 3.2 to the box below (you may need to rename your MLP). Experiment with the number of hidden layers, the number of neurons in each hidden layer, the optimization algorithm, etc. See <a href="https://keras.io/optimizers">Keras Optimizers</a> for the types of optimizers and their parameters. <strong>Train for 100 epochs.</strong></p>
 
 </div>
@@ -14979,7 +14910,7 @@ Epoch 50/50
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="sd">"""</span>
 <span class="sd">Cut and paste your code from Section 3.2 below, then modify it to get</span>
 <span class="sd">much better results than what you had earlier. E.g. increase the number of</span>
 <span class="sd">nodes in the hidden layer, increase the number of hidden layers,</span>
@@ -14987,12 +14918,12 @@ Epoch 50/50
 
 <span class="sd">Train for 100 epochs.</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">"""</span>
+<span class="sd">""" </span>
 <span class="sd">Write your code to build an MLP with one hidden layer of 1024 neurons,</span>
 <span class="sd">with an SGD optimizer. Train for 50 epochs, and output the training and</span>
 <span class="sd">validation accuracy at each epoch.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 <span class="n">INPUT_FEATS</span> <span class="o">=</span> <span class="mi">3072</span>
 <span class="n">N_LAYER_1</span> <span class="o">=</span> <span class="mi">1024</span>
 <span class="n">N_LAYER_2</span> <span class="o">=</span> <span class="mi">512</span>
@@ -15005,21 +14936,21 @@ Epoch 50/50
 
 <span class="c1"># Create the neural network</span>
 <span class="n">nn2</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
-<span class="n">nn2</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">N_LAYER_1</span><span class="p">,</span> <span class="n">input_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">INPUT_FEATS</span><span class="p">,</span> <span class="p">),</span> <span class="n">activation</span> <span class="o">=</span> <span class="s1">&#39;sigmoid&#39;</span><span class="p">))</span>
+<span class="n">nn2</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">N_LAYER_1</span><span class="p">,</span> <span class="n">input_shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">INPUT_FEATS</span><span class="p">,</span> <span class="p">),</span> <span class="n">activation</span> <span class="o">=</span> <span class="s1">'sigmoid'</span><span class="p">))</span>
 <span class="n">nn2</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dropout</span><span class="p">(</span><span class="mf">0.2</span><span class="p">))</span>
-<span class="n">nn2</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">N_LAYER_2</span><span class="p">,</span> <span class="n">activation</span> <span class="o">=</span> <span class="s1">&#39;sigmoid&#39;</span><span class="p">))</span>
+<span class="n">nn2</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">N_LAYER_2</span><span class="p">,</span> <span class="n">activation</span> <span class="o">=</span> <span class="s1">'sigmoid'</span><span class="p">))</span>
 <span class="n">nn2</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dropout</span><span class="p">(</span><span class="mf">0.2</span><span class="p">))</span>
-<span class="n">nn2</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">N_CLASSES</span><span class="p">,</span> <span class="n">activation</span> <span class="o">=</span> <span class="s1">&#39;softmax&#39;</span><span class="p">))</span>
+<span class="n">nn2</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">N_CLASSES</span><span class="p">,</span> <span class="n">activation</span> <span class="o">=</span> <span class="s1">'softmax'</span><span class="p">))</span>
 
 <span class="n">lr_schedule</span> <span class="o">=</span> <span class="n">ExponentialDecay</span><span class="p">(</span><span class="n">initial_learning_rate</span><span class="o">=</span><span class="mf">1e-1</span><span class="p">,</span> <span class="n">decay_steps</span><span class="o">=</span><span class="mi">100000</span><span class="p">,</span> <span class="n">decay_rate</span><span class="o">=</span><span class="mf">0.96</span><span class="p">)</span>
 
 <span class="c1"># Create our optimizer</span>
 <span class="n">sgd</span> <span class="o">=</span> <span class="n">SGD</span><span class="p">(</span><span class="n">learning_rate</span> <span class="o">=</span> <span class="n">lr_schedule</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
 
-<span class="c1"># &#39;Compile&#39; the network to associate it with a loss function,</span>
+<span class="c1"># 'Compile' the network to associate it with a loss function,</span>
 <span class="c1"># an optimizer, and what metrics we want to track</span>
-<span class="n">nn2</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="s1">&#39;categorical_crossentropy&#39;</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">sgd</span><span class="p">,</span> 
-          <span class="n">metrics</span> <span class="o">=</span> <span class="s1">&#39;accuracy&#39;</span><span class="p">)</span>
+<span class="n">nn2</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loss</span><span class="o">=</span><span class="s1">'categorical_crossentropy'</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">sgd</span><span class="p">,</span> 
+          <span class="n">metrics</span> <span class="o">=</span> <span class="s1">'accuracy'</span><span class="p">)</span>
 </pre></div>
 
      </div>
@@ -15050,9 +14981,7 @@ Epoch 50/50
 
 
 <div class="jp-OutputArea jp-Cell-outputArea">
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -15261,9 +15190,7 @@ Epoch 100/100
 </pre>
 </div>
 </div>
-
-<div class="jp-OutputArea-child">
-
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt">Out[&nbsp;]:</div>
 
@@ -15287,89 +15214,33 @@ Epoch 100/100
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<hr>
+<hr />
 <h4 id="Question-4:">Question 4:<a class="anchor-link" href="#Question-4:">&#182;</a></h4><p>Complete the following table with your final design (you may add more rows for the # neurons (layer1) etc. to detail how many neurons you have in each hidden layer). Likewise you may replace the lr, momentum etc rows with parameters more appropriate to the optimizer that you have chosen. (3 MARKS)</p>
-<table>
-<thead><tr>
-<th style="text-align:left">Hyperparameter</th>
-<th style="text-align:left">What I used</th>
-<th style="text-align:left">Why?</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">Optimizer</td>
-<td style="text-align:left">SGD</td>
-<td style="text-align:left">Performs similar to or better than other optimizers like Adam.</td>
-</tr>
-<tr>
-<td style="text-align:left"># of hidden layers</td>
-<td style="text-align:left">2</td>
-<td style="text-align:left">Add layer to represent more complex relationship</td>
-</tr>
-<tr>
-<td style="text-align:left"># neurons(layer1)</td>
-<td style="text-align:left">1024</td>
-<td style="text-align:left">Balance between layers before and after</td>
-</tr>
-<tr>
-<td style="text-align:left">Hid layer1 activation</td>
-<td style="text-align:left">Sigmoid</td>
-<td style="text-align:left">Nonlinear relationship, better performance than ReLU</td>
-</tr>
-<tr>
-<td style="text-align:left"># neurons(layer2)</td>
-<td style="text-align:left">1024</td>
-<td style="text-align:left">Balance between layers before and after</td>
-</tr>
-<tr>
-<td style="text-align:left">Hid layer2 activation</td>
-<td style="text-align:left">Sigmoid</td>
-<td style="text-align:left">Nonlinear relationship</td>
-</tr>
-<tr>
-<td style="text-align:left"># of output neurons</td>
-<td style="text-align:left">10</td>
-<td style="text-align:left">Number of classes</td>
-</tr>
-<tr>
-<td style="text-align:left">Output activation</td>
-<td style="text-align:left">Softmax</td>
-<td style="text-align:left">Convert values to probability distribution over classes</td>
-</tr>
-<tr>
-<td style="text-align:left">learning rate</td>
-<td style="text-align:left">0.1</td>
-<td style="text-align:left">Too high it does not converge, too low it is too slow</td>
-</tr>
-<tr>
-<td style="text-align:left">momentum</td>
-<td style="text-align:left">0.1</td>
-<td style="text-align:left">Some momentum to prevent getting stuck, too high would converge</td>
-</tr>
-<tr>
-<td style="text-align:left">decay</td>
-<td style="text-align:left">None</td>
-<td style="text-align:left">Model already underfitting, would not improve getting stuck in local optima</td>
-</tr>
-<tr>
-<td style="text-align:left">loss</td>
-<td style="text-align:left">categorical cross entropy</td>
-<td style="text-align:left">task is the same, multi-class classification</td>
-</tr>
-</tbody>
-</table>
+<p>| Hyperparameter       | What I used | Why?                  |
+|:---------------------|:------------|:----------------------|
+| Optimizer            | SGD | Performs similar to or better than other optimizers like Adam in our experiments. |
+| # of hidden layers   | 2 | Add layer to represent more complex relationship |
+| # neurons(layer1)    | 1024 | Balance between layers before and after |
+| Hid layer1 activation| Sigmoid | Nonlinear relationship, better performance than ReLU based on our tests |
+| # neurons(layer2)    | 1024 | Balance between layers before and after |
+| Hid layer2 activation| Sigmoid | Nonlinear relationship |
+| # of output neurons  | 10 | Number of classes |
+| Output activation    | Softmax | Convert values to probability distribution over classes |
+| learning rate        | 0.1 | Too high it does not converge, too low it is too slow |
+| momentum             | 0.1 | Some momentum to prevent getting stuck, too high would converge |
+| decay                | None | Model already underfitting, would not improve getting stuck in local optima |
+| loss                 | categorical cross entropy | task is the same, multi-class classification |</p>
 <p><em>FOR GRADER:</em> <br>
-<em>TABLE: <strong>_</strong> / 3</em> <br>
-<em>CODE: <strong>__</strong> / 5</em><br></p>
-<p><strong><em>TOTAL: <strong>__</strong> / 8</em></strong></p>
+<em>TABLE: _____ / 3</em> <br>
+<em>CODE: ______ / 5</em><br></p>
+<p>*<strong>TOTAL: ______ / 8</strong>*</p>
 <h4 id="Question-5">Question 5<a class="anchor-link" href="#Question-5">&#182;</a></h4><p>What is the final training and validation accuracy that you obtained after 100 epochs. Is there considerable improvement over Section 3.2? Are there still signs of underfitting or overfitting? Explain your answer (5 MARKS)</p>
-<p><strong><em>Training: 0.72, validataion: 0.58. An improvement from 3.2. There is still a large sign of overfitting, since the validation accuracy is lower than the training accuracy.</em></strong></p>
-<p><em>FOR GRADER: <strong>__</strong> / 5</em></p>
+<p>*<strong>Training: 0.72, validation: 0.58. An improvement from 3.2. There is still a large sign of overfitting, since the validation accuracy is significantly lower than the training accuracy. There is slightly less underfitting with the training accuracy improving.</strong>*</p>
+<p><em>FOR GRADER: ______ / 5</em></p>
 <h4 id="Question-6">Question 6<a class="anchor-link" href="#Question-6">&#182;</a></h4><p>Write a short reflection on the practical difficulties of using a dense MLP to classsify images in the CIFAR-10 datasets. (3 MARKS)</p>
-<p><strong><em>Training takes a very long time even with a GPU, and optimizing hyperparameters is not straightforward. The amount of time spent optimizing does not directly correlate with better performance. Optimizing does not give significantly better results.</em></strong></p>
-<p><em>FOR GRADER: <strong>___</strong> /3</em></p>
-<hr>
+<p>*<strong>Training takes a very long time even with a GPU, and optimizing hyperparameters is not straightforward. The amount of time spent optimizing does not directly correlate with better performance. Optimizing does not give significantly better results. As such there are some considerations when choosing to optimize hyperparameters. For example, if faster results are needed, we should not bother optimizing the hyperparameters too much as the improvement is not significant. However, if obtaining the best possible results is our goal and we do not have time considerations, we can choose to optimize the hyperparameters.</strong>*</p>
+<p><em>FOR GRADER: _______ /3</em></p>
+<hr />
 <h2 id="4.-Creating-a-CNN-for-the-MNIST-Dataset">4. Creating a CNN for the MNIST Dataset<a class="anchor-link" href="#4.-Creating-a-CNN-for-the-MNIST-Dataset">&#182;</a></h2><p>In this section we will now create a convolutional neural network (CNN) to classify images in the MNIST dataset that we used in the previous lab. Let's go through each part to see how to do this.</p>
 <h3 id="4.1-Loading-the-MNIST-Dataset">4.1 Loading the MNIST Dataset<a class="anchor-link" href="#4.1-Loading-the-MNIST-Dataset">&#182;</a></h3><p>As always we will load the MNIST dataset, scale the inputs to between 0 and 1, and convert the Y labels to one-hot vectors. However unlike before we will not flatten the 28x28 image to a 784 element vector, since CNNs can inherently handle 2D data.</p>
 
@@ -15392,8 +15263,8 @@ Epoch 100/100
     <span class="n">train_x</span> <span class="o">=</span> <span class="n">train_x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">train_x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">test_x</span> <span class="o">=</span> <span class="n">test_x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">test_x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
-    <span class="n">train_x</span><span class="o">=</span><span class="n">train_x</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
-    <span class="n">test_x</span> <span class="o">=</span> <span class="n">test_x</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">)</span>
+    <span class="n">train_x</span><span class="o">=</span><span class="n">train_x</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'float32'</span><span class="p">)</span>
+    <span class="n">test_x</span> <span class="o">=</span> <span class="n">test_x</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">'float32'</span><span class="p">)</span>
     
     <span class="n">train_x</span> <span class="o">/=</span> <span class="mf">255.0</span>
     <span class="n">test_x</span> <span class="o">/=</span> <span class="mf">255.0</span>
@@ -15416,8 +15287,8 @@ Epoch 100/100
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h3 id="4.2-Building-the-CNN">4.2 Building the CNN<a class="anchor-link" href="#4.2-Building-the-CNN">&#182;</a></h3><p>We will now build the CNN. Unlike before we will create a function to produce the CNN. We will also look at how to save and load Keras models using "checkpoints", particularly "ModelCheckpoint" that saves the model each epoch.</p>
-<p>Let's begin by creating the model. We call os.path.exists to see if a model file exists, and call "load_model" if it does. Otherwise we create a new model.</p>
+<h3 id="4.2-Building-the-CNN">4.2 Building the CNN<a class="anchor-link" href="#4.2-Building-the-CNN">&#182;</a></h3><p>We will now build the CNN. Unlike before we will create a function to produce the CNN. We will also look at how to save and load Keras models using &quot;checkpoints&quot;, particularly &quot;ModelCheckpoint&quot; that saves the model each epoch.</p>
+<p>Let's begin by creating the model. We call os.path.exists to see if a model file exists, and call &quot;load_model&quot; if it does. Otherwise we create a new model.</p>
 
 </div>
 </div>
@@ -15435,7 +15306,7 @@ Epoch 100/100
 <span class="kn">from</span> <span class="nn">tensorflow.keras.layers</span> <span class="kn">import</span> <span class="n">Dense</span><span class="p">,</span> <span class="n">Dropout</span><span class="p">,</span> <span class="n">Flatten</span><span class="p">,</span> <span class="n">Conv2D</span><span class="p">,</span> <span class="n">MaxPooling2D</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
-<span class="n">MODEL_NAME</span> <span class="o">=</span> <span class="s1">&#39;mnist-cnn.hd5&#39;</span>
+<span class="n">MODEL_NAME</span> <span class="o">=</span> <span class="s1">'mnist-cnn.hd5'</span>
 
 <span class="k">def</span> <span class="nf">buildmodel</span><span class="p">(</span><span class="n">model_name</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">model_name</span><span class="p">):</span>
@@ -15443,18 +15314,18 @@ Epoch 100/100
     <span class="k">else</span><span class="p">:</span>
         <span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
         <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Conv2D</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span>
-        <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">,</span>
-        <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">))</span> <span class="c1"># Question 7</span>
+        <span class="n">activation</span><span class="o">=</span><span class="s1">'relu'</span><span class="p">,</span>
+        <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="s1">'same'</span><span class="p">))</span> <span class="c1"># Question 7</span>
 
         <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MaxPooling2D</span><span class="p">(</span><span class="n">pool_size</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">strides</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span> <span class="c1"># Question 8</span>
-        <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Conv2D</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">))</span>
-        <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Conv2D</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">))</span>
-        <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Conv2D</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">))</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Conv2D</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s1">'relu'</span><span class="p">))</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Conv2D</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s1">'relu'</span><span class="p">))</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Conv2D</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s1">'relu'</span><span class="p">))</span>
         <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MaxPooling2D</span><span class="p">(</span><span class="n">pool_size</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">strides</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
         <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Flatten</span><span class="p">())</span> <span class="c1"># Question 9</span>
-        <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="mi">1024</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">))</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="mi">1024</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">'relu'</span><span class="p">))</span>
         <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dropout</span><span class="p">(</span><span class="mf">0.1</span><span class="p">))</span>
-        <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;softmax&#39;</span><span class="p">))</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">'softmax'</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="n">model</span>
 </pre></div>
@@ -15471,29 +15342,28 @@ Epoch 100/100
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<hr>
+<hr />
 <h4 id="Question-7">Question 7<a class="anchor-link" href="#Question-7">&#182;</a></h4><p>The first layer in our CNN is a 2D convolution kernel, shown here:</p>
-
 <pre><code>        model.add(Conv2D(32, kernel_size=(5,5),
         activation='relu',
-        input_shape=(28, 28, 1), padding='same')) # Question 7</code></pre>
-<p>Why is the input_shape set to (28, 28, 1)? What does this mean? What does "padding = 'same'" mean? (4 MARKS)</p>
-<p><strong><em>It is the size of a single input data, with 28 rows, 28 columns, and 1 channel. Same padding will lead to the output size being the same as the input size.</em></strong></p>
-<p><em>FOR GRADER: <strong>__</strong> / 4</em></p>
+        input_shape=(28, 28, 1), padding='same')) # Question 7
+</code></pre>
+<p>Why is the input_shape set to (28, 28, 1)? What does this mean? What does &quot;padding = 'same'&quot; mean? (4 MARKS)</p>
+<p>*<strong>It is the size of a single input data, with 28 rows, 28 columns, and 1 channel. Same padding will lead to the output size being the same as the input size.</strong>*</p>
+<p><em>FOR GRADER: ______ / 4</em></p>
 <h4 id="Question-8">Question 8<a class="anchor-link" href="#Question-8">&#182;</a></h4><p>The second layer is the MaxPooling2D layer shown below:</p>
-
-<pre><code>        model.add(MaxPooling2D(pool_size=(2,2), strides=2)) # Question 8</code></pre>
+<pre><code>        model.add(MaxPooling2D(pool_size=(2,2), strides=2)) # Question 8
+</code></pre>
 <p>What other types of pooling layers are available? What does 'strides = 2' mean? (3 MARKS)</p>
-<p><strong><em>There are also Average pooling, global average pooling, and global max pooling layers. Strides = 2 means the filter moves every 2 steps along each dimension.</em></strong></p>
-<p><em>FOR GRADER: <strong>_</strong> / 3</em></p>
-<h4 id="Question-9">Question 9<a class="anchor-link" href="#Question-9">&#182;</a></h4><p>What does the "Flatten" layer here do? Why is it needed?</p>
-
-<pre><code>        model.add(Flatten()) # Question 9</code></pre>
-<p><strong><em>To input into the Dense layer, the input has to be a single vector, so the 2D output from the convolutional layers has to be flattened first.</em></strong></p>
-<p><em>FOR GRADER: <em>__</em> / 2</em></p>
-<hr>
-<h3 id="4.3-Training-the-CNN">4.3 Training the CNN<a class="anchor-link" href="#4.3-Training-the-CNN">&#182;</a></h3><p>Let's now train the CNN. In this example we introduce the idea of a "callback", which is a routine that Keras calls at the end of each epoch. Specifically we look at two callbacks:</p>
-
+<p>*<strong>There are also Average pooling, global average pooling, and global max pooling layers. Strides = 2 means the filter moves every 2 steps along each dimension.</strong>*</p>
+<p><em>FOR GRADER: _____ / 3</em></p>
+<h4 id="Question-9">Question 9<a class="anchor-link" href="#Question-9">&#182;</a></h4><p>What does the &quot;Flatten&quot; layer here do? Why is it needed?</p>
+<pre><code>        model.add(Flatten()) # Question 9
+</code></pre>
+<p>*<strong>To input into the Dense layer, the input has to be a single vector, so the 2D output from the convolutional layers has to be flattened first.</strong>*</p>
+<p><em>FOR GRADER: ____ / 2</em></p>
+<hr />
+<h3 id="4.3-Training-the-CNN">4.3 Training the CNN<a class="anchor-link" href="#4.3-Training-the-CNN">&#182;</a></h3><p>Let's now train the CNN. In this example we introduce the idea of a &quot;callback&quot;, which is a routine that Keras calls at the end of each epoch. Specifically we look at two callbacks:</p>
 <pre><code>1. ModelCheckpoint: When called, Keras saves the model to the specified filename.
 
 2. EarlyStopping: When called, Keras checks if it should stop the training prematurely.
@@ -15519,21 +15389,21 @@ Epoch 100/100
 <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">train_x</span><span class="p">,</span> <span class="n">train_y</span><span class="p">,</span> <span class="n">epochs</span><span class="p">,</span> <span class="n">test_x</span><span class="p">,</span> <span class="n">test_y</span><span class="p">,</span> <span class="n">model_name</span><span class="p">):</span>
 
     <span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="n">SGD</span><span class="p">(</span><span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">momentum</span><span class="o">=</span><span class="mf">0.7</span><span class="p">),</span> 
-                  <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;categorical_crossentropy&#39;</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">])</span>
+                  <span class="n">loss</span><span class="o">=</span><span class="s1">'categorical_crossentropy'</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">'accuracy'</span><span class="p">])</span>
 
     <span class="n">savemodel</span> <span class="o">=</span> <span class="n">ModelCheckpoint</span><span class="p">(</span><span class="n">model_name</span><span class="p">)</span>
     <span class="n">stopmodel</span> <span class="o">=</span> <span class="n">EarlyStopping</span><span class="p">(</span><span class="n">min_delta</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">patience</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span> <span class="c1"># Question 10</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Starting training.&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Starting training."</span><span class="p">)</span>
 
     <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">train_x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">train_y</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
     <span class="n">validation_data</span><span class="o">=</span><span class="p">(</span><span class="n">test_x</span><span class="p">,</span> <span class="n">test_y</span><span class="p">),</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">epochs</span><span class="o">=</span><span class="n">epochs</span><span class="p">,</span> 
     <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">savemodel</span><span class="p">,</span> <span class="n">stopmodel</span><span class="p">])</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Done. Now evaluating.&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Done. Now evaluating."</span><span class="p">)</span>
     <span class="n">loss</span><span class="p">,</span> <span class="n">acc</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">test_x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">test_y</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Test accuracy: </span><span class="si">%3.2f</span><span class="s2">, loss: </span><span class="si">%3.2f</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">acc</span><span class="p">,</span> <span class="n">loss</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Test accuracy: </span><span class="si">%3.2f</span><span class="s2">, loss: </span><span class="si">%3.2f</span><span class="s2">"</span><span class="o">%</span><span class="p">(</span><span class="n">acc</span><span class="p">,</span> <span class="n">loss</span><span class="p">))</span>
 </pre></div>
 
      </div>
@@ -15548,19 +15418,19 @@ Epoch 100/100
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<p>Notice that there isn't very much that is unusual going on; we compile the model with our loss function and optimizer, then call fit, and finally evaluate to look at the final accuracy for the test set.  The only thing unusual is the "callbacks" parameter here in the fit function call</p>
-
+<p>Notice that there isn't very much that is unusual going on; we compile the model with our loss function and optimizer, then call fit, and finally evaluate to look at the final accuracy for the test set.  The only thing unusual is the &quot;callbacks&quot; parameter here in the fit function call</p>
 <pre><code>    model.fit(x=train_x, y=train_y, batch_size=32,
     validation_data=(test_x, test_y), shuffle=True,
     epochs=epochs, 
-    callbacks=[savemodel, stopmodel])</code></pre>
-<hr>
+    callbacks=[savemodel, stopmodel])
+</code></pre>
+<hr />
 <h4 id="Question-10.">Question 10.<a class="anchor-link" href="#Question-10.">&#182;</a></h4><p>What do the min_delta and patience parameters do in the EarlyStopping callback, as shown below? (2 MARKS)</p>
-
-<pre><code>    stopmodel = EarlyStopping(min_delta=0.001, patience=10) # Question 10</code></pre>
-<p><strong><em><code>min_delta</code> is the minimum change to qualify as an improvement, and <code>patience</code> is the number of epochs of no improvement before training will be stopped.</em></strong></p>
-<p><em>FOR GRADER: <strong>__</strong> / 2</em></p>
-<hr>
+<pre><code>    stopmodel = EarlyStopping(min_delta=0.001, patience=10) # Question 10
+</code></pre>
+<p>*<strong><code>min_delta</code> is the minimum change to qualify as an improvement, and <code>patience</code> is the number of epochs of no improvement before training will be stopped.</strong>*</p>
+<p><em>FOR GRADER: ______ / 2</em></p>
+<hr />
 <h3 id="4.4-Putting-it-together.">4.4 Putting it together.<a class="anchor-link" href="#4.4-Putting-it-together.">&#182;</a></h3><p>Now let's run the code and see how it goes (Note: To save time we are training for only 5 epochs; we should train much longer to get much better results):</p>
 
 </div>
@@ -15591,9 +15461,7 @@ Epoch 100/100
 
 
 <div class="jp-OutputArea jp-Cell-outputArea">
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -15605,9 +15473,7 @@ Epoch 100/100
 </pre>
 </div>
 </div>
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -15618,9 +15484,7 @@ Epoch 100/100
 </pre>
 </div>
 </div>
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -15655,64 +15519,28 @@ Test accuracy: 0.99, loss: 0.04
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<hr>
+<hr />
 <h4 id="Question-11.">Question 11.<a class="anchor-link" href="#Question-11.">&#182;</a></h4><p>Compare the relative advantages and disadvantages of CNN vs. the Dense MLP that you build in sections 3.2 and 3.3. What makes CNNs better (or worse)? (3 MARKS)</p>
-<p><strong><em>CNNs take advantage of parameter sharing between parts of the image that are close by, as well as the sparsity of connections between each layer allowing for a more efficient network. While Dense MLPs will find the relationship between all parts of a previous layer and the next layer, CNNs will find more relevant relationships, saving on resources at the same time.</em></strong></p>
-<p><em>FOR GRADER: <strong>__</strong> / 3</em></p>
-<h2 id="5.-Creating-a-CNN-for-the-CIFAR-10-Dataset">5. Creating a CNN for the CIFAR-10 Dataset<a class="anchor-link" href="#5.-Creating-a-CNN-for-the-CIFAR-10-Dataset">&#182;</a></h2><p>Now comes the fun part: Using the example above for creating a CNN for the MNIST dataset, now create a CNN in the box below for the MNIST-10 dataset. At the end of each epoch save the model to a file called "cifar.hd5" (note: the .hd5 is added automatically for you).</p>
-<hr>
+<p>*<strong>CNNs take advantage of parameter sharing between parts of the image that are close by, as well as the sparsity of connections between each layer allowing for a more efficient network. While Dense MLPs will find the relationship between all parts of a previous layer and the next layer, CNNs will find more relevant relationships, saving on resources at the same time. </strong>*</p>
+<p><em>FOR GRADER: ______ / 3</em></p>
+<h2 id="5.-Creating-a-CNN-for-the-CIFAR-10-Dataset">5. Creating a CNN for the CIFAR-10 Dataset<a class="anchor-link" href="#5.-Creating-a-CNN-for-the-CIFAR-10-Dataset">&#182;</a></h2><p>Now comes the fun part: Using the example above for creating a CNN for the MNIST dataset, now create a CNN in the box below for the MNIST-10 dataset. At the end of each epoch save the model to a file called &quot;cifar.hd5&quot; (note: the .hd5 is added automatically for you).</p>
+<hr />
 <h4 id="Question-12.">Question 12.<a class="anchor-link" href="#Question-12.">&#182;</a></h4><p>Summarize your design in the table below (the actual coding cell comes after this):</p>
-<table>
-<thead><tr>
-<th style="text-align:left">Hyperparameter</th>
-<th style="text-align:left">What I used</th>
-<th style="text-align:left">Why?</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">Optimizer</td>
-<td style="text-align:left">SGD</td>
-<td style="text-align:left">Works well</td>
-</tr>
-<tr>
-<td style="text-align:left">Input shape</td>
-<td style="text-align:left">(32, 32, 3)</td>
-<td style="text-align:left">Input size of a picture</td>
-</tr>
-<tr>
-<td style="text-align:left">First layer</td>
-<td style="text-align:left">Conv2D</td>
-<td style="text-align:left">Picture data using convolution</td>
-</tr>
-<tr>
-<td style="text-align:left">Second layer</td>
-<td style="text-align:left">MaxPooling2D</td>
-<td style="text-align:left">Aggregate local data using max pooling, common practice</td>
-</tr>
-<tr>
-<td style="text-align:left">Add more layers</td>
-<td style="text-align:left">Conv2D x3, MaxPool, Dropout, Flatten</td>
-<td style="text-align:left">Model complex relationship with multiple layers</td>
-</tr>
-<tr>
-<td style="text-align:left">if needed</td>
-<td style="text-align:left"></td>
-<td style="text-align:left">Dropout added to prevent overfitting</td>
-</tr>
-<tr>
-<td style="text-align:left">Dense layer</td>
-<td style="text-align:left">1024</td>
-<td style="text-align:left">Output eventual 10 classes</td>
-</tr>
-</tbody>
-</table>
+<p>| Hyperparameter       | What I used | Why?                  |
+|:---------------------|:------------|:----------------------|
+| Optimizer            | SGD | Works well |
+| Input shape          | (32, 32, 3) | Input size of a picture |
+| First layer          | Conv2D | Picture data using convolution |
+| Second layer         | MaxPooling2D | Aggregate local data using max pooling, common practice |
+| Add more layers      | Conv2D x3, MaxPool, Dropout, Flatten| Model complex relationship with multiple layers|
+| if needed            | Dropout            | Added to prevent overfitting |
+| Dense layer          | 1024 | Output eventual 10 classes |</p>
 <p><em>FOR GRADER:</em> <br>
-<em>TABLE: <strong><em>__</em></strong> / 3</em> <br>
-<em>CODE: <strong><strong>_</strong></strong>/ 7</em> <br>
-<strong>TOTAL: <strong>___</strong> / 10</strong> <br></p>
-<hr>
-<p><strong><em>TOTAL: <strong>___</strong> / 55</em></strong></p>
+<em>TABLE: ________ / 3</em> <br>
+<em>CODE: _________/ 7</em> <br>
+<strong>TOTAL: _______ / 10</strong> <br></p>
+<hr />
+<p>*<strong>TOTAL: _______ / 55</strong>*</p>
 
 </div>
 </div>
@@ -15725,15 +15553,15 @@ Test accuracy: 0.99, loss: 0.04
 <div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="sd">"""</span>
 <span class="sd">Write your code for your CNN for the CIFAR-10 dataset here. </span>
 
 <span class="sd">Note: train_x, train_y, test_x, test_y were changed when we called </span>
 <span class="sd">load_mnist in the previous section. You will now need to call load_cifar10</span>
 <span class="sd">again.</span>
 
-<span class="sd">&quot;&quot;&quot;</span>
-<span class="n">MODEL_NAME_CIFAR</span> <span class="o">=</span> <span class="s1">&#39;cifar.hd5&#39;</span> 
+<span class="sd">"""</span>
+<span class="n">MODEL_NAME_CIFAR</span> <span class="o">=</span> <span class="s1">'cifar.hd5'</span> 
 
 <span class="p">(</span><span class="n">train_x</span><span class="p">,</span> <span class="n">train_y</span><span class="p">),</span> <span class="p">(</span><span class="n">test_x</span><span class="p">,</span> <span class="n">test_y</span><span class="p">)</span> <span class="o">=</span> <span class="n">load_cifar10</span><span class="p">()</span>
 <span class="n">train_x</span> <span class="o">=</span> <span class="n">train_x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">train_x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
@@ -15742,22 +15570,22 @@ Test accuracy: 0.99, loss: 0.04
 <span class="k">def</span> <span class="nf">buildmodel</span><span class="p">(</span><span class="n">model_name</span><span class="p">):</span>
     <span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
     <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Conv2D</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span>
-    <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">,</span>
-    <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="s1">&#39;same&#39;</span><span class="p">))</span> <span class="c1"># Question 7</span>
+    <span class="n">activation</span><span class="o">=</span><span class="s1">'relu'</span><span class="p">,</span>
+    <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">padding</span><span class="o">=</span><span class="s1">'same'</span><span class="p">))</span> <span class="c1"># Question 7</span>
 
     <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MaxPooling2D</span><span class="p">(</span><span class="n">pool_size</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">strides</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span> <span class="c1"># Question 8</span>
     <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dropout</span><span class="p">(</span><span class="mf">0.5</span><span class="p">))</span>
 
-    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Conv2D</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">))</span>
-    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Conv2D</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">))</span>
-    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Conv2D</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Conv2D</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s1">'relu'</span><span class="p">))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Conv2D</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s1">'relu'</span><span class="p">))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Conv2D</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="n">activation</span><span class="o">=</span><span class="s1">'relu'</span><span class="p">))</span>
     <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MaxPooling2D</span><span class="p">(</span><span class="n">pool_size</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">strides</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
     <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dropout</span><span class="p">(</span><span class="mf">0.5</span><span class="p">))</span>
     
     <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Flatten</span><span class="p">())</span> <span class="c1"># Question 9</span>
-    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;relu&#39;</span><span class="p">))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="mi">512</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">'relu'</span><span class="p">))</span>
     <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dropout</span><span class="p">(</span><span class="mf">0.5</span><span class="p">))</span>
-    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">&#39;softmax&#39;</span><span class="p">))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="s1">'softmax'</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="n">model</span>
 
@@ -15776,9 +15604,7 @@ Test accuracy: 0.99, loss: 0.04
 
 
 <div class="jp-OutputArea jp-Cell-outputArea">
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -15789,9 +15615,7 @@ Test accuracy: 0.99, loss: 0.04
 </pre>
 </div>
 </div>
-
 <div class="jp-OutputArea-child">
-
     
     <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 
@@ -15903,22 +15727,6 @@ Test accuracy: 0.77, loss: 0.71
 
 </div>
 
-</div>
-
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs  ">
-<div class="jp-Cell-inputWrapper">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-     <div class="CodeMirror cm-s-jupyter">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-     </div>
-</div>
-</div>
 </div>
 
 </div>
