@@ -3,6 +3,8 @@ import numpy as np
 from PIL import Image
 import json
 from pathlib import Path
+import os
+import glob
 
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
@@ -46,7 +48,8 @@ def send_image(client: mqtt.Client, filename: Path):
 def main():
     client = setup("192.168.0.1")
     print("Sending data.")
-    send_image(client, "tulip2.jpg")
+    for file in glob.glob(os.path.join('samples', '*')):
+        send_image(client, file)
     print("Done. Waiting for results.")
     while True:
         pass
