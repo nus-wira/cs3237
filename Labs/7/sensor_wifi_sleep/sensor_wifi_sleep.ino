@@ -11,10 +11,13 @@ void setup() {
   pinMode(IN, INPUT);
   
   Serial.begin(115200);
+  while(!Serial) { }
 
-  int val = analogRead(IN);
-  Serial.print("Read value from sensor: ");
-  Serial.println(val);
+  while (digitalRead(IN) != LOW) {
+    delay(500);
+    Serial.println("Button not pushed!");
+  }
+  Serial.print("Button pushed!");
 
   WiFi.begin(ssid, password);
   Serial.println("");
@@ -29,7 +32,8 @@ void setup() {
   Serial.println(ssid);
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
-
+  
+  Serial.println("I'm going into deep sleep mode for 20 seconds");
   ESP.deepSleep(20e6);
 }
 
